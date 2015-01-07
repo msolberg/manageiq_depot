@@ -28,9 +28,11 @@ The library consists of the following components:
 **/OpenStackOps/OpenStack/Methods**:  This is a set of methods which operate on OpenStack instances.  The following methods are implemented:
 
 * **ConvertMetadataToTags**: Converts Nova Metadata to ManageIQ tags.
+* **ListFlavors**: Retrieve a list of possible flavors for a virtual instance resize operation.  (For use in generating dynamic drop down lists)
 * **ListMigrationTargets**: Retrieve a list of possible migration targets for a virtual instance.  (For use in generating dynamic drop down lists)
 * **MigrateInstance**: Live Migrate an Instance to the hypervisor specified in dialog_TargetHypervisor
 * **RebuildInstance**: Rebuild an Instance from its original image.
+* **ResizeInstance**: Resize an instance to the flavor specified in dialog_Flavor
 * **TagHypervisor**: Update the instance tags with the hypervisor.
 * **VerifyMetadata**: Example method which verifies that a particular metadata tag exists.
 
@@ -46,6 +48,7 @@ The library consists of the following components:
 * **MigrateInstance**: Initiates a live migration of an instance.
 * **OpenStackDiscovery**: Used to run tagging operations on new instances.
 * **RebuildInstance**: Initiates a rebuild of an instance.
+* **ResizeInstance**: Initiates a resize of an instance.
 
 The Request instances can be triggered from a button attached to
 the "VM and Instance" objects.  To create these buttons:
