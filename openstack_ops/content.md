@@ -27,12 +27,18 @@ The library consists of the following components:
 
 **/OpenStackOps/OpenStack/Methods**:  This is a set of methods which operate on OpenStack instances.  The following methods are implemented:
 
+* **BackupInstance**: Backup an Instance by creating snapshots.
 * **ConvertMetadataToTags**: Converts Nova Metadata to ManageIQ tags.
 * **ListFlavors**: Retrieve a list of possible flavors for a virtual instance resize operation.  (For use in generating dynamic drop down lists)
 * **ListMigrationTargets**: Retrieve a list of possible migration targets for a virtual instance.  (For use in generating dynamic drop down lists)
 * **MigrateInstance**: Live Migrate an Instance to the hypervisor specified in dialog_TargetHypervisor
 * **RebuildInstance**: Rebuild an Instance from its original image.
+* **RefreshInstance**: Refresh the Power States and Relationships for a VM.
 * **ResizeInstance**: Resize an instance to the flavor specified in dialog_Flavor
+* **ResumeInstance**: Resume an Instance.
+* **StartInstance**: Start an Instance.
+* **StopInstance**: Stop an Instance.
+* **Suspend**: Suspend an Instance.
 * **TagHypervisor**: Update the instance tags with the hypervisor.
 * **VerifyMetadata**: Example method which verifies that a particular metadata tag exists.
 
@@ -41,6 +47,9 @@ The library consists of the following components:
 * **compute.instance.live_migration._rollback.end**: Reruns OpenStackDiscovery after live migration events.
 * **compute.instance.live_migration.post.dest.end**: Reruns OpenStackDiscovery after live migration events.
 * **compute.instance.rebuild.end**: Reruns OpenStackDiscovery after rebuild events.
+* **compute.instance.power_off.end**: Refreshes relationships after power off events.
+* **compute.instance.power_on.end**: Refreshes relationships after power on events.
+* **compute.instance.resume**: Refreshes power states after resume events.
 * **OpenStackDiscovery**: Runs the ConvertMetadataToTags and TagHypervisor methods on OpenStackDiscovery Requests.
 
 **/OpenStackOps/System/Request**: The following Requests are defined in the library:
@@ -49,6 +58,11 @@ The library consists of the following components:
 * **OpenStackDiscovery**: Used to run tagging operations on new instances.
 * **RebuildInstance**: Initiates a rebuild of an instance.
 * **ResizeInstance**: Initiates a resize of an instance.
+* **ResumeInstance**: Initiates resuming an instance.
+* **StartInstance**: Initiates starting an instance.
+* **StopInstance**: Initiates stopping an instance
+* **SuspendInstance**: Initiates suspending an instance.
+
 
 The Request instances can be triggered from a button attached to
 the "VM and Instance" objects.  To create these buttons:

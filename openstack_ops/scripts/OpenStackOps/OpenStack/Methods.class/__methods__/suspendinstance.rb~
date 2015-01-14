@@ -1,0 +1,16 @@
+#
+# Description: Rebuild an Instance from its original image.
+#
+
+require 'fog'
+
+vm = $evm.root['vm']
+
+$evm.log("info", "Suspending instance #{vm.name}")
+
+begin
+  vm.suspend()
+rescue => suspenderr
+  $evm.log("error", "Failed to suspend VM #{suspenderr}")
+end
+
