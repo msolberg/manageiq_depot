@@ -42,6 +42,9 @@ The library consists of the following components:
 * **TagHypervisor**: Update the instance tags with the hypervisor.
 * **VerifyMetadata**: Example method which verifies that a particular metadata tag exists.
 
+**/OpenStackOps/OpenStack/StateMachines**:  This is a set of state machines which can be used to accomplish workflows.  The following state machines are implemented:
+* **Backup**: This state machine stops a running instance, takes a backup, and then starts it again.
+
 **/OpenStackOps/System/Event**: The following Events are defined in the library:
 
 * **compute.instance.live_migration._rollback.end**: Reruns OpenStackDiscovery after live migration events.
@@ -54,6 +57,7 @@ The library consists of the following components:
 
 **/OpenStackOps/System/Request**: The following Requests are defined in the library:
 
+* **Backup**: Initiates the default Backup State Machine.
 * **MigrateInstance**: Initiates a live migration of an instance.
 * **OpenStackDiscovery**: Used to run tagging operations on new instances.
 * **RebuildInstance**: Initiates a rebuild of an instance.

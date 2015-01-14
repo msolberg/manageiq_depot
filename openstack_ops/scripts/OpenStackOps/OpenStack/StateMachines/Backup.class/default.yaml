@@ -1,0 +1,18 @@
+---
+object_type: instance
+version: 1.0
+object:
+  attributes:
+    display_name: 
+    name: Default
+    inherits: 
+    description: 
+  fields:
+  - StopInstance:
+      value: /OpenStackOps/OpenStack/Methods/StopInstance
+  - CheckInstanceStopped:
+      value: /OpenStackOps/OpenStack/StateMachines/Methods/CheckInstanceStopped
+  - BackupInstance:
+      value: /OpenStackOps/OpenStack/Methods/BackupInstance
+  - StartInstance:
+      value: /OpenStackOps/OpenStack/Methods/StartInstance
