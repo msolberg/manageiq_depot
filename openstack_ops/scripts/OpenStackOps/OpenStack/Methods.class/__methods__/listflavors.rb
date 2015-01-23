@@ -32,3 +32,5 @@ dialog_field["sort_by"] = "none"
 
 dialog_field["values"] = flavor_list
 dialog_field["default_value"] = flavor_list.keys[0]
+
+exit MIQ_OK

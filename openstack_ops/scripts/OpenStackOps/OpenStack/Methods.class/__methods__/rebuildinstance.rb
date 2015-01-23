@@ -31,16 +31,18 @@ begin
   })
 rescue => connerr
   $evm.log("error", "Couldn't connect to Openstack with provider credentials")
+  exit MIQ_ABORT
 end
 
 instance = conn.servers.get(vm.ems_ref)
 image_ref = instance.image['id']
 
-$evm.log("info", "Rebuilding #{vm.name} with image #{image_ref}")
-
 begin
   instance.rebuild(image_ref, instance.name)
+  $evm.log("info", "Rebuilding instance #{vm.name} with image #{image_ref}")
 rescue => rebuilderr
-  $evm.log("error", "Failed to rebuild VM #{rebuilderr}")
+  $evm.log("error", "Failed to rebuild instance #{vm.name} with image #{image_ref}: #{rebuilderr}")
+  exit MIQ_ABORT
 end
 
+exit MIQ_OK

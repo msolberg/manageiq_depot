@@ -32,17 +32,19 @@ begin
   })
 rescue => connerr
   $evm.log("error", "Couldn't connect to Openstack with provider credentials")
+  exit MIQ_ABORT
 end
 
 instance = conn.servers.get(vm.ems_ref)
-
-$evm.log("info", "Starting Backup of #{vm.name}")
-
 ts = DateTime.now().strftime(format="%Y%M%d%H%M%S")
+snapname = "#{instance.name}-backup-#{ts}"
 
 begin
-  instance.create_image("#{instance.name}-backup-#{ts}")
+  instance.create_image(snapname)
+  $evm.log("info", "Created snapshot #{snapname} for instance #{vm.name}") 
 rescue => rebuilderr
-  $evm.log("error", "Failed to backup VM #{rebuilderr}")
+  $evm.log("error", "Failed to snapshot instance #{vm.name}: #{rebuilderr}")
+  exit MIQ_ABORT
 end
 
+exit MIQ_OK

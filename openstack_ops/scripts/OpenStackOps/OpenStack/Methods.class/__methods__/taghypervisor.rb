@@ -35,6 +35,7 @@ begin
   })
 rescue => connerr
   $evm.log("error", "Couldn't connect to Openstack with provider credentials")
+  exit MIQ_ABORT
 end
 
 
@@ -43,33 +44,36 @@ hypervisor = instance.os_ext_srv_attr_hypervisor_hostname
 # tag names can't have dashes, dots, or be longer than 30 chars
 shortname  = hypervisor.gsub('-', '_').gsub('.', '_')[0,30]
 
-$evm.log("info", "Found hypervisor #{hypervisor} for VM #{instance.name}")
-
 # Create the category if it doesn't exist
-if not $evm.execute('category_exists?', 'hypervisor')
-  $evm.log("info", "Creating OpenStack Hypervisor category")
+unless $evm.execute('category_exists?', 'hypervisor')
   $evm.execute('category_create',
                :name => 'hypervisor',
                :single_value => false,
                :description => "OpenStack Hypervisor")
+  $evm.log("info", "Creating OpenStack hypervisor category")
 end
 
 # Create this tag if it doesn't exist
-if not $evm.execute('tag_exists?', 'hypervisor', shortname)
-  $evm.log("info", "Creating Hypervisor Tag #{shortname}")
+unless $evm.execute('tag_exists?', 'hypervisor', shortname)
   $evm.execute('tag_create', 'hypervisor',
                :name => shortname,
                :description => hypervisor)
+  $evm.log("info", "Creating hypervisor tag #{shortname}")
 end
 
-if not $evm.execute('tag_exists?', 'hypervisor', shortname)
-  $evm.log("error", "Unable to create tag #{shortname}")
+unless $evm.execute('tag_exists?', 'hypervisor', shortname)
+  $evm.log("error", "Unable to create hypervisor tag #{shortname}")
+  exit MIQ_ABORT
 end
 
 # Apply the tag
-$evm.log("info", "Applying tag hypervisor/#{shortname}")
 vm.tag_assign("hypervisor/#{shortname}")
 
-if not vm.tagged_with?('hypervisor', shortname)
-  $evm.log("error", "Unable to tag #{vm.name} with hypervisor/#{shortname}")
+if vm.tagged_with?('hypervisor', shortname)
+  $evm.log("info", "Applied tag hypervisor/#{shortname} to instance #{vm.name}")
+else
+  $evm.log("error", "Unable to tag instance #{vm.name} with hypervisor/#{shortname}")
+  exit MIQ_ABORT
 end
+
+exit MIQ_OK

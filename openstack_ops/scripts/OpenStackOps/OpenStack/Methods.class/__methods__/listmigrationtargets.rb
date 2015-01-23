@@ -37,6 +37,7 @@ begin
   })
 rescue => connerr
   $evm.log("error", "Couldn't connect to Openstack with provider credentials")
+  exit MIQ_ABORT
 end
 
 
@@ -49,7 +50,6 @@ conn.hosts.each do |host|
     # First exclude the current hypervisor
     if host.host_name != current_hypervisor
       # Then check the AZ
-      $evm.log("info", "Comparing #{host.zone} to #{vm.availability_zone.name}")
       if host.zone == vm.availability_zone.name
         hypervisor_list[host.host_name] = host.host_name
       end
@@ -77,3 +77,5 @@ dialog_field["data_type"] = "integer"
 
 dialog_field["values"] = hypervisor_list
 dialog_field["default_value"] = hypervisor_list.keys[0]
+
+exit MIQ_OK

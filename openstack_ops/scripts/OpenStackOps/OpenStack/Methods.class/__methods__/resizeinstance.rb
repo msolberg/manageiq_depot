@@ -8,8 +8,6 @@ require 'fog'
 vm = $evm.root['vm']
 target_flavor = $evm.root['dialog_Flavor']
 
-$evm.log("info", "Got request to resize #{vm.name} to #{target_flavor}")
-
 openstack = vm.ext_management_system
 
 tenant_name = nil
@@ -36,6 +34,7 @@ begin
   })
 rescue => connerr
   $evm.log("error", "Couldn't connect to Openstack with provider credentials")
+  exit MIQ_ABORT
 end
 
 instance   = conn.servers.get(vm.ems_ref)
@@ -50,9 +49,14 @@ end
 if flavor_ref != nil
   begin
     instance.resize(flavor_ref)
+    $evm.log("info", "Resized instance #{vm.name} to #{target_flavor}")
   rescue => resizeeerr
-    $evm.log("error", "Failed to reize VM #{resizeeerr}")
+    $evm.log("error", "Failed to resize instance #{vm.name}: #{resizeeerr}")
+    exit MIQ_ABORT
   end
 else
-  $evm.log("error", "Could not find flavor #{target_flavor} in region.  Resize failed.")
+  $evm.log("error", "Failed to resize instance #{vm.name}: Could not find flavor #{target_flavor} in region.")
+  exit MIQ_ABORT
 end
+
+exit MIQ_OK

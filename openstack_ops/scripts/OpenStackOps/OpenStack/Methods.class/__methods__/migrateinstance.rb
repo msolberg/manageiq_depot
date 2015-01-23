@@ -6,9 +6,6 @@ require 'fog'
 
 vm = $evm.root['vm']
 target_hypervisor = $evm.root['dialog_TargetHypervisor']
-
-$evm.log("info", "Got request to migrate #{vm.name} to #{target_hypervisor}")
-
 openstack = vm.ext_management_system
 
 tenant_name = nil
@@ -35,13 +32,17 @@ begin
   })
 rescue => connerr
   $evm.log("error", "Couldn't connect to Openstack with provider credentials")
+  exit MIQ_ABORT
 end
 
 
 instance   = conn.servers.get(vm.ems_ref)
 begin
   instance.live_migrate(target_hypervisor, false, false)
+  $evm.log("info", "Migrating instance #{vm.name} to hypervisor #{target_hypervisor}") 
 rescue => migrateerr
-  $evm.log("error", "Failed to migrate VM #{migrateerr}")
+  $evm.log("error", "Failed to migrate instance #{vm.name} to hypervisor #{target_hypervisor}: #{migrateerr}")
+  exit MIQ_ABORT
 end
 
+exit MIQ_OK

@@ -8,8 +8,6 @@
 require 'fog'
 
 vm = $evm.root['vm']
-$evm.log("info", "Discovered OpenStack Instance #{vm.inspect}")
-
 openstack = vm.ext_management_system
 auth_url = "http://#{openstack[:hostname]}:#{openstack[:port]}/v2.0/tokens"
 
@@ -23,13 +21,12 @@ begin
   })
 rescue => connerr
   $evm.log("error", "Couldn't connect to Openstack with provider credentials")
+  exit MIQ_ABORT
 end
 
 response = conn.get_server_details(vm.ems_ref)
-$evm.log("info", "VM metadata: #{response[:body]['server']['metadata']}")
 
 localization = nil
-
 response[:body]['server']['metadata'].each_pair{|k, v|
   if k == "localization"
     localization = v
@@ -37,7 +34,8 @@ response[:body]['server']['metadata'].each_pair{|k, v|
 }
 
 if localization.nil?
-  $evm.log("info", "Stopping VM without localization set: #{vm.name}")
-  vm.suspend
+  vm.suspend()
+  $evm.log("info", "Suspending instance #{vm.name} without localization set")
 end
 
+exit MIQ_OK
