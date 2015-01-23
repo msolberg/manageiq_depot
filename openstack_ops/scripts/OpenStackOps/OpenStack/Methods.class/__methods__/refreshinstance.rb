@@ -5,8 +5,7 @@
 require 'fog'
 
 vm = $evm.root['vm']
-vm.refresh
+vm.refresh()
 
 $evm.log("info", "Refreshing Power States and Relationships for VM #{vm.name}")
-
 
