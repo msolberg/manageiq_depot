@@ -36,37 +36,14 @@ rescue => connerr
 end
 
 instance = conn.servers.get(vm.ems_ref)
-token = conn.auth_token
-url = "#{instance.links[0]['href']}/action"
-timeout = 60
-
-
-payload = JSON.dump(
-  {
-    "os-stop" => nil
-  }
-)
 
 begin
-  result = RestClient::Request.execute({
-                                        :method  => :post,
-                                        :url     => url,
-                                        :payload => payload,
-                                        :timeout => timeout,
-                                        :headers => { :accept => 'version=2', :content_type => 'application/json', 'X-Auth-Token' => token }
-                                           })
+  instance.stop()
   $evm.log("info", "Stopping instance #{vm.name}")
-
 rescue => stoperr
-  if #{stoperr} == "409 Conflict"
-    $evm.root['ae_result'] = "retry"
-    $evm.root['ae_retry_interval'] = "1.minute"
-    $evm.log("info", "Couldn't stop instance #{vm.name}: retrying.")
-  else
-    $evm.root['ae_result'] = "error"
-    $evm.log("error", "Couldn't stop instance #{vm.name}: #{stoperr}")
-    exit MIQ_ABORT
-  end
+  $evm.root['ae_result'] = "error"
+  $evm.log("error", "Couldn't stop instance #{vm.name}: #{stoperr}")
+  exit MIQ_ABORT
 end
 
 exit MIQ_OK
